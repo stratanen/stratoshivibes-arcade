@@ -1,16 +1,15 @@
 name: Deploy Arcade
 
-# Publishes the arcade-preview/ folder of stratoshivibes-mahjong
-# as the site root of arcade.stratoshivibes.com.
-# Runs on every push here, every 3 hours, and manually:
-# Actions -> Deploy Arcade -> Run workflow.
+# arcade.stratoshivibes.com is a short link only. The site/ folder holds a page
+# that forwards every visit to https://stratanen.github.io/stratoshivibes-mahjong/
+# (same path, query and hash), so the games stay on one address and players keep
+# their saved progress and Shop purchases.
+# Runs on every push here, and manually: Actions -> Deploy Arcade -> Run workflow.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "17 */3 * * *"
 
 permissions:
   contents: read
@@ -29,15 +28,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          repository: stratanen/stratoshivibes-mahjong
-          path: src
 
-      - name: Prepare site from arcade-preview/
-        run: |
-          cp -r src/arcade-preview site
-          rm -f site/README.md
-          touch site/.nojekyll
+      - name: Add .nojekyll
+        run: touch site/.nojekyll
 
       - uses: actions/configure-pages@v5
 
